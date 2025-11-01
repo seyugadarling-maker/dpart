@@ -49,6 +49,10 @@ export default function ManageServerPage() {
   const { data: mods, mutate: refreshMods } = useSWR<{ mods: string[] }>(
     id ? `/api/mc/servers/${id}/mods` : null,
     fetcher,
+    {
+      dedupingInterval: 60000, // Added deduping to prevent unnecessary refetches
+      revalidateOnFocus: false, // Disable revalidation on tab focus
+    },
   )
 
   async function sendCommand(command: string) {

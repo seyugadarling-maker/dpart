@@ -21,7 +21,10 @@ export default function ManageServer() {
     mutate: refetchStatus,
     isLoading,
   } = useSWR(`/api/mc/servers/${id}/status`, fetcher, {
-    refreshInterval: 5000,
+    refreshInterval: 10000, // Increased from 5s to 10s
+    dedupingInterval: 10000, // Added deduping interval
+    revalidateOnFocus: false, // Disable revalidation on tab focus
+    revalidateOnReconnect: true, // Only revalidate on network reconnect
   })
 
   const running = status?.status === "running"

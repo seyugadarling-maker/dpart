@@ -30,7 +30,10 @@ export default function ProfilePage() {
   const router = useRouter()
   const { user, isAuthenticated, refreshUser, loading } = useAuth()
   const { toast } = useToast()
-  const { data, isLoading, error, mutate } = useSWR(isAuthenticated ? "/profile" : null, fetcher)
+  const { data, isLoading, error, mutate } = useSWR(isAuthenticated ? "/profile" : null, fetcher, {
+    dedupingInterval: 60000,
+    revalidateOnFocus: false,
+  })
 
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")

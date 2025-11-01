@@ -138,7 +138,16 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
+    /* Removed global outline-ring/50 that was affecting message bubbles */
+  }
+  button,
+  input,
+  select,
+  textarea,
+  [role="button"] {
+    /* Apply outline only to interactive elements */
+    @apply outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;

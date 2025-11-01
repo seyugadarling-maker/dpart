@@ -47,7 +47,10 @@ export default function DashboardPage() {
   const { user, logout, isAuthenticated } = useAuth()
   const router = useRouter()
   const { data, isLoading, error, mutate } = useSWR<{ servers: any[] }>(isAuthenticated ? "/servers" : null, fetcher, {
-    refreshInterval: 30000,
+    refreshInterval: 60000, // Increased from 30s to 60s to reduce skeleton flickering
+    dedupingInterval: 60000, // Added deduping to prevent unnecessary refetches
+    revalidateOnFocus: false, // Disable revalidation on tab focus
+    revalidateOnReconnect: true, // Only revalidate on network reconnect
   })
 
   const [openWizard, setOpenWizard] = useState(false)

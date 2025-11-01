@@ -83,7 +83,10 @@ export default function PlanSelectionStep({ selectedPlan, onPlanSelect, onNext, 
             <Card
               className={cn(
                 "relative cursor-pointer transition-all duration-200 hover:shadow-lg",
-                selectedPlan?.id === plan.id ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md",
+                "border-2",
+                selectedPlan?.id === plan.id
+                  ? "border-primary shadow-lg"
+                  : "border-muted-foreground/20 hover:border-muted-foreground/40",
                 plan.popular && "border-primary",
               )}
               onClick={() => onPlanSelect(plan)}
