@@ -86,8 +86,9 @@ export default function PlanSelectionStep({ selectedPlan, onPlanSelect, onNext, 
                 "border-2",
                 selectedPlan?.id === plan.id
                   ? "border-primary shadow-lg"
-                  : "border-muted-foreground/20 hover:border-muted-foreground/40",
-                plan.popular && "border-primary",
+                  : plan.popular
+                    ? "border-primary"
+                    : "border-slate-600 hover:border-slate-500",
               )}
               onClick={() => onPlanSelect(plan)}
             >
