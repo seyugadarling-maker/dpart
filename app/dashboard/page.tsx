@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import ServerCard from "@/components/dashboard/server-card"
 import { useAuth, authenticatedApiCall } from "@/components/auth-provider"
-import { Plus, LogOut, Server, CreditCard, User, RefreshCw } from "lucide-react"
+import { Plus, LogOut, Server, CreditCard, User, RefreshCw, Wallet } from "lucide-react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import CreateServerWizard from "@/components/dashboard/create-server-wizard"
 import { useState } from "react"
@@ -39,6 +39,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 // Custom fetcher that uses authenticatedApiCall
 const fetcher = (url: string) => authenticatedApiCall(url).then((data) => data.data)
@@ -47,10 +48,17 @@ export default function DashboardPage() {
   const { user, logout, isAuthenticated } = useAuth()
   const router = useRouter()
   const { data, isLoading, error, mutate } = useSWR<{ servers: any[] }>(isAuthenticated ? "/servers" : null, fetcher, {
-    refreshInterval: 60000, // Increased from 30s to 60s to reduce skeleton flickering
-    dedupingInterval: 60000, // Added deduping to prevent unnecessary refetches
-    revalidateOnFocus: false, // Disable revalidation on tab focus
-    revalidateOnReconnect: true, // Only revalidate on network reconnect
+    refreshInterval: 60000,
+    dedupingInterval: 60000,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+  })
+
+  const { data: profileData, isLoading: profileLoading } = useSWR(isAuthenticated ? "/profile" : null, fetcher, {
+    refreshInterval: 60000,
+    dedupingInterval: 60000,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
   })
 
   const [openWizard, setOpenWizard] = useState(false)
@@ -159,6 +167,7 @@ export default function DashboardPage() {
   }
 
   const servers = data?.servers || []
+  const balance = profileData?.user?.balance || 0
 
   // Helper for user initials fallback
   const initials =
@@ -262,6 +271,22 @@ export default function DashboardPage() {
                   <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            </div>
+
+            <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Card className="bg-gradient-to-br from-blue-600 to-blue-700 border-0 text-white">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium opacity-90">Account Balance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="text-3xl font-bold">
+                      {profileLoading ? <Skeleton className="h-8 w-16 bg-blue-500" /> : `$${balance.toFixed(2)}`}
+                    </div>
+                    <Wallet className="h-8 w-8 opacity-50" />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
             <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">

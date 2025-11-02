@@ -35,6 +35,11 @@ const userSchema = new mongoose.Schema({
     ],
     minlength: [6, "Password must be at least 6 characters long"],
   },
+  balance: {
+    type: Number,
+    default: 0,
+    min: [0, "Balance cannot be negative"],
+  },
   role: {
     type: String,
     enum: ["user", "admin"],

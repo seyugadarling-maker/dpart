@@ -8,6 +8,8 @@ export type User = {
   id: string
   email: string
   username?: string
+  role?: string
+  balance?: number
 }
 
 type AuthContextValue = {
@@ -181,14 +183,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         setLoading(true)
 
-        console.log("[v0] Register payload:", { username, email, password: "***" })
-
         const data = await apiCall("/auth/register", {
           method: "POST",
           body: JSON.stringify({ username, email, password }),
         })
-
-        console.log("[v0] Register success:", data)
 
         if (data.success) {
           const { user: userData, token } = data.data
@@ -198,8 +196,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           await logUserActivity(username, email, password, "register")
         }
       } catch (error: any) {
-        console.log("[v0] Register error:", error)
-
         // Handle validation errors from backend
         if (error.errors) {
           const validationError = new Error("Validation failed")
