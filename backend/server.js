@@ -9,8 +9,7 @@ const authRoutes = require("./routes/auth")
 const serverRoutes = require("./routes/servers")
 const profileRoutes = require("./routes/profile")
 const adminRoutes = require("./routes/admin")
-const notFound = require("./middleware/notFound")
-const errorHandler = require("./middleware/errorHandler")
+const { notFound, errorHandler } = require("./middleware/errorHandler")
 
 const app = express()
 
@@ -21,7 +20,22 @@ app.use(
   }),
 )
 
-// Other middleware and routes can be added here
+// CORS middleware
+app.use(cors())
+
+// Body parser middleware
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+// Database connection
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("Connected to MongoDB")
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err)
+  })
 
 // Routes
 app.use("/auth", authRoutes)
@@ -29,7 +43,7 @@ app.use("/servers", serverRoutes)
 app.use("/profile", profileRoutes)
 app.use("/admin", adminRoutes)
 
-// Error handling middleware
+// Error handling middleware (must be last)
 app.use(notFound)
 app.use(errorHandler)
 
